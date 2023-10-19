@@ -1,37 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Parkplatz Status</title>
+    <title>PARK HOUSE</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
         <div class="card">
             <div class="card-body">
-                <h1 class="card-title">ParkHaus</h1>
+                <h1 class="card-title">ParkHouse</h1>
                 <form>
                     <div class="form-group">
-                        <label for="param1">Total Useable Places in ParkHaus:</label>
-                        <input type="text" class="form-control" id="param1" name="param1" placeholder="Enter the current count" required>
+                        <label for="param1">Total Available Places in Parkhouse:</label>
+                        <input type="text" class="form-control" id="param1" name="param1" placeholder="Enter the total count" required>
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="totalPlaces()">Update</button>
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="updateTotalAvailablePlaces()">Update</button>
                 </form>
             </div>
         </div>
     </div>
-    
-    <script>
-        function totalPlaces() {
-            const TotalPlaces = parseInt(document.getElementById("param1").value);
 
-            if (isNaN(currentCount)) {
-                alert("Please enter a valid number for the current count.");
+    <script>
+        function updateTotalAvailablePlaces() {
+            const totalAvailablePlaces = parseInt(document.getElementById("param1").value);
+
+            if (isNaN(totalAvailablePlaces)) {
+                alert("Please enter a valid number for the total available places.");
                 return;
             }
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+        
             const data = {
-                currentCount: TotalPlaces          
+                totalAvailablePlaces: totalAvailablePlaces,
+                username: StadtwerkAmSee,
+                password: SCS
             };
 
+            // Replace 'your-node-red-push-url' with your Node-RED HTTP push URL
             const nodeRedPushUrl = 'https://washburne.digimondo.io/e0c40fb465b71cfb4b0b0c96d51e443b/api/post-parkplatz';
 
             fetch(nodeRedPushUrl, {
