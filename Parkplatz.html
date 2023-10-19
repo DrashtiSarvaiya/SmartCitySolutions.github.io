@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parkplatz Status</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">Parkplatz Status</h1>
+                <form>
+                    <div class="form-group">
+                        <label for="param1">Total Free Parking Spaces:</label>
+                        <input type="text" class="form-control" id="param1" name="param1" value="500" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="param2">Current Count of Free Parking Spaces:</label>
+                        <input type="text" class="form-control" id="param2" name="param2" placeholder="Enter the current count" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="updateTotalFreeSpaces()">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function updateTotalFreeSpaces() {
+            const currentCount = parseInt(document.getElementById("param2").value);
+
+            if (isNaN(currentCount)) {
+                alert("Please enter a valid number for the current count.");
+                return;
+            }
+
+            const defaultCount = 500;
+            const updatedCount = defaultCount - currentCount;
+
+            document.getElementById("param1").value = updatedCount;
+
+            // Create the data to send to Node-RED
+            const data = {
+                currentCount: currentCount,
+                defaultCount: updatedCount
+            };
+
+            const nodeRedPushUrl = 'https://washburne.digimondo.io/e0c40fb465b71cfb4b0b0c96d51e443b/api/post-parkplatz';
+
+            fetch(nodeRedPushUrl, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw Error('Error sending data');
+                }
+                return response.text();
+            })
+            .then(responseData => {
+                console.log('Data successfully sent to Node-RED:', responseData);
+            })
+            .catch(error => {
+                console.error('Error sending data:', error);
+            });
+        }
+    </script>
+</body>
+</html>
