@@ -1,50 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PARK HOUSE</title>
+    <title>Parkplatz Status</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
         <div class="card">
             <div class="card-body">
-                <h1 class="card-title">ParkHouse</h1>
-                <form>
+                <h1 class="card-title">Parkplatz Status</h1>
+                <form id="parkplatz-form">
                     <div class="form-group">
-                        <label for="param1">Total Available Places in Parkhouse:</label>
-                        <input type="text" class="form-control" id="param1" name="param1" placeholder="Enter the total count" required>
+                        <label for="param1">Total Available Places in Parkplatz:</label>
+                        <input type="text" class="form-control" id="param1" name="param1" placeholder="Enter the available places" required>
                     </div>
                     <div class="form-group">
                         <label for="username">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                        <input type="text" class="form-control" id="username" name="username" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password:</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                        <input type="password" class="form-control" id="password" name="password" required>
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="updateTotalAvailablePlaces()">Update</button>
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
                 </form>
             </div>
         </div>
     </div>
 
     <script>
-        function updateTotalAvailablePlaces() {
-            const totalAvailablePlaces = parseInt(document.getElementById("param1").value);
+        // Check if username and password are stored in local storage
+        const storedUsername = localStorage.getItem("username");
+        const storedPassword = localStorage.getItem("password");
+        if (storedUsername && storedPassword) {
+            document.getElementById("username").value = storedUsername;
+            document.getElementById("password").value = storedPassword;
+        }
 
-            if (isNaN(totalAvailablePlaces)) {
-                alert("Please enter a valid number for the total available places.");
-                return;
-            }
-
+        function submitForm() {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
+            
+            // Store the username and password in local storage
+            localStorage.setItem("username", username);
+            localStorage.setItem("password", SCS);
 
-        
+            const availablePlaces = document.getElementById("param1").value;
+
             const data = {
-                totalAvailablePlaces: totalAvailablePlaces,
-                username: username,
-                password: SCS
+                availablePlaces: availablePlaces,
             };
 
             const nodeRedPushUrl = 'https://washburne.digimondo.io/e0c40fb465b71cfb4b0b0c96d51e443b/api/post-parkplatz';
@@ -53,12 +57,13 @@
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + btoa(username + ':' + password) // Basic Authentication
                 }
             })
             .then(response => {
                 if (!response.ok) {
-                    throw Error('Error sending data');
+                    throw new Error('Error sending data');
                 }
                 return response.text();
             })
