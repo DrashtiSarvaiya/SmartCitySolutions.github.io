@@ -1,66 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Parkplatz Status</title>
+    <title>PARKHOUSE</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
         <div class="card">
             <div class="card-body">
-                <h1 class="card-title">Authentication</h1>
-                <form id="auth-form">
+                <h1 class="card-title">ParkHouse Availability</h1>
+                <form>
                     <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <label for="param1">Total Available Places in Parkhouse:</label>
+                        <input type="text" class="form-control" id="param1" name="param1" placeholder="Enter the count" required>
                     </div>
-                    <div class="form-group">
-                        <label for="password">Password:</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="authenticate()">Login</button>
+                    <button type="button" class="btn btn-primary" onclick="updateTotalAvailableSpaces()">Update</button>
                 </form>
             </div>
         </div>
     </div>
-
-    <div class="container mt-5" style="display: none;" id="data-input">
-        <div class="card">
-            <div class="card-body">
-                <h1 class="card-title">Parkplatz Status</h1>
-                <form id="parkplatz-form">
-                    <div class="form-group">
-                        <label for="param1">Total Available Places in Parkplatz:</label>
-                        <input type="text" class="form-control" id="param1" name="param1" placeholder="Enter the available places" required>
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="sendData()">Submit</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
+    
     <script>
-        function authenticate() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
+        function updateTotalAvailableSpaces() {
+            const count = parseInt(document.getElementById("param1").value);
 
-            // You can implement your authentication logic here.
-            // For this example, we'll simply check if the username and password are not empty.
-            if (username && password) {
-                // Hide the authentication form and show the data input form.
-                document.getElementById("auth-form").style.display = "none";
-                document.getElementById("data-input").style.display = "block";
-            } else {
-                alert("Invalid credentials. Please enter both username and password.");
+            if (isNaN(count)) {
+                alert("Please enter a valid number.");
+                return;
             }
-        }
 
-        function sendData() {
-            const availablePlaces = document.getElementById("param1").value;
-
-            // Create the data to send to Node-RED
             const data = {
-                availablePlaces: availablePlaces,
+                totalAvailableSpaces: count
             };
 
             const nodeRedPushUrl = 'https://washburne.digimondo.io/e0c40fb465b71cfb4b0b0c96d51e443b/api/post-parkplatz';
@@ -69,21 +39,21 @@
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: {
-                    'Content-Type': 'application/json',
-                },
+                    'Content-Type': 'application/json'
+                }
             })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error('Error sending data');
-                    }
-                    return response.text();
-                })
-                .then((responseData) => {
-                    console.log('Data successfully sent to Node-RED:', responseData);
-                })
-                .catch((error) => {
-                    console.error('Error sending data:', error);
-                });
+            .then(response => {
+                if (!response.ok) {
+                    throw Error('Error sending data');
+                }
+                return response.text();
+            })
+            .then(responseData => {
+                console.log('Data successfully sent to Node-RED:', responseData);
+            })
+            .catch(error => {
+                console.error('Error sending data:', error);
+            });
         }
     </script>
 </body>
