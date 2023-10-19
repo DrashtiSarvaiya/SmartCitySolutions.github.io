@@ -43,11 +43,10 @@
         
             const data = {
                 totalAvailablePlaces: totalAvailablePlaces,
-                username: StadtwerkAmSee,
+                username: username,
                 password: SCS
             };
 
-            // Replace 'your-node-red-push-url' with your Node-RED HTTP push URL
             const nodeRedPushUrl = 'https://washburne.digimondo.io/e0c40fb465b71cfb4b0b0c96d51e443b/api/post-parkplatz';
 
             fetch(nodeRedPushUrl, {
